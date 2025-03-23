@@ -10,7 +10,6 @@
     body {
       background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
       font-family: 'Inter', sans-serif;
-      margin: 0;
     }
     .card {
       background: #f7f7f7;
@@ -60,7 +59,7 @@
         <button id="cgLogout" class="ml-auto bg-red-500 text-white px-4 py-2 rounded">Logout</button>
       </div>
     </nav>
-    <!-- Content container with padding-top to avoid nav overlap -->
+    <!-- Content container with top padding -->
     <div class="pt-20 flex flex-col items-center">
       <!-- Caregiver Home Page -->
       <div id="cgHome" class="cg-page w-full max-w-4xl px-4">
@@ -83,14 +82,16 @@
             <p class="font-bold mt-2">Activity Log</p>
           </a>
         </div>
-        <footer class="w-full p-4 bg-white shadow-lg flex justify-around mt-8">
+        <!-- Fixed Footer Navigation for Caregiver -->
+        <footer class="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg flex justify-around">
           <button id="cgHomeBtn" class="text-2xl transition-transform transform hover:scale-125">🏠</button>
           <button id="cgProfileFooter" class="text-2xl transition-transform transform hover:scale-125">👤</button>
           <button id="cgSettingsBtn" class="text-2xl transition-transform transform hover:scale-125">⚙️</button>
           <button id="cgLogoutBtn" class="text-2xl transition-transform transform hover:scale-125 text-red-500">⎋</button>
         </footer>
       </div>
-      <!-- Additional Caregiver Pages (hidden by default) -->
+      
+      <!-- Additional Caregiver Pages -->
       <div id="cgMedicine" class="cg-page hidden w-full max-w-4xl px-4">
         <h2 class="text-3xl font-bold mb-4">Medicine Reminder</h2>
         <div class="card p-6 rounded-lg shadow-md mb-8">
@@ -159,7 +160,7 @@
 
   <!-- Elder Profile Section -->
   <div id="elderProfile" class="hidden">
-    <!-- Elder Home Page (as provided) -->
+    <!-- Elder Home Page -->
     <div id="elHome" class="el-page">
       <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
         <h1 class="text-2xl font-bold flex items-center">
@@ -191,16 +192,17 @@
             <img src="alarm.png" alt="Emergency SOS" class="mx-auto w-16 h-16">
             <p class="font-bold mt-2">Emergency SOS</p>
           </a>
-          <a href="#" id="elSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+          <a href="#" id="elSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 mb-12 text-center shadow-lg transform hover:scale-105">
             <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
             <p class="font-bold mt-2">Safety Zones</p>
           </a>
-          <a href="#" id="elMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+          <a href="#" id="elMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 mb-12 text-center shadow-lg transform hover:scale-105">
             <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
             <p class="font-bold mt-2">Medication Reminders</p>
           </a>
         </div>
-        <footer class="w-full p-4 bg-white shadow-lg flex justify-around mt-4">
+        <!-- Fixed Elder Footer Navigation -->
+        <footer class="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg flex justify-around">
           <button id="elHomeBtn" class="text-2xl transition-transform transform hover:scale-125">🏠</button>
           <button id="elProfileFooter" class="text-2xl transition-transform transform hover:scale-125">👤</button>
           <button id="elSettingsBtn" class="text-2xl transition-transform transform hover:scale-125">⚙️</button>
@@ -337,7 +339,7 @@
             images
           };
           remindersCG.push(reminder);
-          // Share same reminder with Elder profile for demo.
+          // For demo, share same reminder with Elder profile.
           remindersEL.push(reminder);
           updateCaregiverViews();
           updateElderViews();
