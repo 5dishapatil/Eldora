@@ -11,6 +11,7 @@
       background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
       font-family: 'Inter', sans-serif;
     }
+    /* Navigation Buttons */
     .nav-btn {
       background-color: transparent;
       color: white;
@@ -23,13 +24,7 @@
     .nav-btn:hover {
       background-color: rgba(255,255,255,0.2);
     }
-    .btn-primary {
-      background-color: #4a90e2;
-      color: white;
-    }
-    .btn-primary:hover {
-      background-color: #3a78c2;
-    }
+    /* Card Style */
     .card {
       background: #f7f7f7;
       border-radius: 0.5rem;
@@ -68,7 +63,7 @@
     </div>
   </div>
 
-  <!-- Caregiver Profile -->
+  <!-- Caregiver Profile Section -->
   <div id="caregiverProfile" class="hidden">
     <!-- Caregiver Navigation -->
     <nav class="p-4 bg-blue-600">
@@ -153,7 +148,7 @@
     </div>
   </div>
 
-  <!-- Elder Profile -->
+  <!-- Elder Profile Section -->
   <div id="elderProfile" class="hidden">
     <!-- Elder Navigation -->
     <nav class="p-4 bg-green-600">
@@ -191,47 +186,73 @@
   </div>
 
   <script>
-    // Global state (for demo, caregiver and elder share the same reminders)
+    // -------------------------
+    // Shared Functions & Helpers
+    // -------------------------
+    function timeToMinutes(timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
+    
+    function calculateAlarmTimes(start, end) {
+      const startM = timeToMinutes(start);
+      const endM = timeToMinutes(end);
+      const duration = endM - startM;
+      const base = Math.floor(duration / 3);
+      const remainder = duration % 3;
+      const firstAlarm = startM + base + (remainder >= 1 ? 1 : 0);
+      const secondAlarm = firstAlarm + base + (remainder === 2 ? 1 : 0);
+      const thirdAlarm = endM;
+      return [firstAlarm, secondAlarm, thirdAlarm];
+    }
+    
+    function formatDelay(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const remaining = minutes % 60;
+      let parts = [];
+      if (hours > 0) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+      if (remaining > 0) parts.push(`${remaining} minute${remaining === 1 ? '' : 's'}`);
+      return parts.join(' ') + ' late';
+    }
+    
+    function addLogEntry(message) {
+      const timestamp = new Date().toLocaleString();
+      logEntries.unshift({ timestamp, message });
+      updateActivityLog();
+    }
+    
+    function updateActivityLog() {
+      const logContainer = document.getElementById('activityLog');
+      if (logEntries.length === 0) {
+        logContainer.innerHTML = '<p class="text-gray-500 text-sm">No activities yet.</p>';
+      } else {
+        logContainer.innerHTML = logEntries.map(entry => {
+          const logClass = entry.message.toLowerCase().includes("missed") ? "log-danger" : "log-success";
+          return `
+            <div class="log-entry ${logClass}">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium">${entry.message}</span>
+                <span class="text-gray-500 text-xs">${entry.timestamp}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+    
+    // -------------------------
+    // Caregiver Profile Functions
+    // -------------------------
     let remindersCG = [];
-    let logEntriesCG = [];
-    let remindersEL = [];
-
-    // -----------------------
-    // Caregiver Functionality
-    // -----------------------
+    let logEntries = []; // Shared log for caregiver
+    let remindersEL = []; // For demo, share same reminders with elder
+    
     document.addEventListener('DOMContentLoaded', function() {
       const caregiverForm = document.getElementById('medicineForm');
       const frequencyInput = document.getElementById('frequency');
       const lifetimeCheckbox = document.getElementById('lifetime');
       const timeSlotsDiv = document.getElementById('timeSlots');
-
-      function timeToMinutes(timeStr) {
-        const [h, m] = timeStr.split(':').map(Number);
-        return h * 60 + m;
-      }
-
-      // Calculate evenly distributed alarm times with remainder distribution.
-      function calculateAlarmTimes(start, end) {
-        const startM = timeToMinutes(start);
-        const endM = timeToMinutes(end);
-        const duration = endM - startM;
-        const base = Math.floor(duration / 3);
-        const remainder = duration % 3;
-        const firstAlarm = startM + base + (remainder >= 1 ? 1 : 0);
-        const secondAlarm = firstAlarm + base + (remainder === 2 ? 1 : 0);
-        const thirdAlarm = endM;
-        return [firstAlarm, secondAlarm, thirdAlarm];
-      }
-
-      function formatDelay(minutes) {
-        const hours = Math.floor(minutes / 60);
-        const remaining = minutes % 60;
-        let parts = [];
-        if (hours > 0) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
-        if (remaining > 0) parts.push(`${remaining} minute${remaining === 1 ? '' : 's'}`);
-        return parts.join(' ') + ' late';
-      }
-
+      
       caregiverForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const medicineName = document.getElementById('medicineName').value;
@@ -264,7 +285,7 @@
           };
         }).filter(x => x !== undefined);
         
-        const processReminder = (images) => {
+        function processReminder(images) {
           const reminder = {
             id: Date.now(),
             medicineName,
@@ -274,7 +295,7 @@
             images
           };
           remindersCG.push(reminder);
-          // For demo, share the same reminders with Elder profile
+          // For demo, share with elder as well.
           remindersEL.push(reminder);
           updateCaregiverViews();
           updateElderViews();
@@ -287,8 +308,8 @@
             <input type="time" class="endTime rounded-md border-gray-300 shadow-sm" required />
             <button type="button" class="removeTimeSlot bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Remove</button>
           </div>`;
-        };
-
+        }
+        
         if (files.length > 0) {
           let filePromises = [];
           for (let i = 0; i < files.length; i++) {
@@ -399,9 +420,9 @@
       window.markTaken = markTaken;
     });
     
-    // -----------------------
-    // Elder Navigation
-    // -----------------------
+    // -------------------------
+    // Elder Navigation (Internal)
+    // -------------------------
     document.addEventListener('DOMContentLoaded', function() {
       const elderNavButtons = document.querySelectorAll('.elder-nav-btn');
       elderNavButtons.forEach(btn => {
@@ -425,9 +446,9 @@
       });
     });
     
-    // -----------------------
-    // Caregiver Navigation (Internal Pages)
-    // -----------------------
+    // -------------------------
+    // Caregiver Navigation (Internal)
+    // -------------------------
     document.addEventListener('DOMContentLoaded', function() {
       const caregiverNavButtons = document.querySelectorAll('.caregiver-nav-btn');
       caregiverNavButtons.forEach(btn => {
@@ -451,9 +472,9 @@
       });
     });
     
-    // -----------------------
+    // -------------------------
     // Landing Page Profile Selection
-    // -----------------------
+    // -------------------------
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('selectCaregiver').addEventListener('click', () => {
         document.getElementById('landingPage').classList.add('hidden');
