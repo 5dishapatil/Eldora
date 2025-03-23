@@ -16,6 +16,14 @@
       border-radius: 0.5rem;
       box-shadow: 0 10px 15px rgba(0,0,0,0.1);
     }
+    input[type="text"],
+    input[type="number"],
+    input[type="time"],
+    input[type="file"] {
+      background-color: #f7f7f7;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
     .log-entry {
       padding: 0.75rem;
       background: white;
@@ -29,113 +37,200 @@
   </style>
 </head>
 <body class="min-h-screen">
-  <!-- Landing / Profile Selection Page (Home Page) -->
-  <div id="landingPage" class="flex flex-col items-center justify-center h-screen">
-    <h1 class="text-5xl font-bold mb-8">Welcome to Eldora</h1>
-    <p class="text-xl mb-8">Select Your Profile</p>
-    <div class="space-x-4">
-      <button id="selectCaregiver" class="bg-blue-600 text-white px-6 py-3 rounded">Caregiver</button>
-      <button id="selectElder" class="bg-green-600 text-white px-6 py-3 rounded">Elder</button>
+  <!-- Landing Page / Profile Selection -->
+  <div id="landingPage" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold mb-8">Welcome to Eldora</h1>
+      <p class="text-xl mb-8">Select Your Profile</p>
+      <div class="space-x-4">
+        <button id="selectCaregiver" class="bg-blue-600 text-white px-6 py-3 rounded">Caregiver</button>
+        <button id="selectElder" class="bg-green-600 text-white px-6 py-3 rounded">Elder</button>
+      </div>
     </div>
   </div>
 
-  <!-- Caregiver Home Page -->
-  <div id="caregiverHome" class="hidden">
-    <!-- Navigation via Cards & Footer Icons only -->
-    <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
-      <h1 class="text-2xl font-bold">Eldora - Caregiver Home</h1>
-    </header>
-    <div class="p-4">
-      <!-- Feature Cards -->
-      <div class="grid grid-cols-2 gap-4 w-full p-4">
-        <!-- Medicine Reminder -->
-        <a href="#" id="cgMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-          <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
-          <p class="font-bold mt-2">Medicine Reminder</p>
-        </a>
-        <!-- Safety Zone -->
-        <a href="#" id="cgSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-          <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
-          <p class="font-bold mt-2">Safety Zone</p>
-        </a>
-        <!-- Profile -->
-        <a href="#" id="cgProfileBtn" class="block bg-orange-300 hover:bg-orange-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-          <img src="profile.png" alt="Profile" class="mx-auto w-16 h-16">
-          <p class="font-bold mt-2">Profile</p>
-        </a>
-        <!-- Activity Log -->
-        <a href="#" id="cgActivityBtn" class="block bg-purple-300 hover:bg-purple-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-          <img src="log.png" alt="Activity Log" class="mx-auto w-16 h-16">
-          <p class="font-bold mt-2">Activity Log</p>
-        </a>
+  <!-- Caregiver Profile Section -->
+  <div id="caregiverProfile" class="hidden">
+    <!-- Caregiver Navigation (via cards and footer only) -->
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- Caregiver Home Page -->
+      <div id="cgHome" class="cg-page">
+        <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
+          <h1 class="text-2xl font-bold">Eldora - Caregiver Home</h1>
+        </header>
+        <div class="grid grid-cols-2 gap-4 w-full p-4">
+          <!-- Medicine Reminder -->
+          <a href="#" id="cgMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Medicine Reminder</p>
+          </a>
+          <!-- Safety Zone -->
+          <a href="#" id="cgSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Safety Zone</p>
+          </a>
+          <!-- Profile -->
+          <a href="#" id="cgProfileBtn" class="block bg-orange-300 hover:bg-orange-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="profile.png" alt="Profile" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Profile</p>
+          </a>
+          <!-- Activity Log -->
+          <a href="#" id="cgActivityBtn" class="block bg-purple-300 hover:bg-purple-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="log.png" alt="Activity Log" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Activity Log</p>
+          </a>
+        </div>
+        <!-- Content Area for Caregiver Pages -->
+        <div id="cgContent" class="p-4"></div>
+        <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
+          <button id="cgHomeBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</button>
+          <button id="cgProfileFooter" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</button>
+          <button id="cgSettingsBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</button>
+          <button id="cgLogoutBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125 text-red-500">⎋</button>
+        </footer>
       </div>
-      <!-- Content Area for Caregiver Pages -->
-      <div id="cgContent" class="p-4"></div>
+
+      <!-- Medicine Reminder, Safety Zone, Profile, Activity Log pages (hidden by default) -->
+      <div id="cgMedicine" class="cg-page hidden">
+        <!-- Medicine Reminder Form and Lists -->
+        <h2 class="text-3xl font-bold mb-4">Medicine Reminder</h2>
+        <div class="card p-6 rounded-lg shadow-md mb-8">
+          <h3 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2">Set Medicine Reminder</h3>
+          <form id="medicineForm" class="space-y-4">
+            <div>
+              <label for="medicineName" class="block text-gray-600 font-medium">Medicine Name</label>
+              <input type="text" id="medicineName" name="medicineName" placeholder="e.g. Paracetamol" required />
+            </div>
+            <div>
+              <label for="pillCount" class="block text-gray-600 font-medium">Pills per Dose</label>
+              <input type="number" id="pillCount" name="pillCount" placeholder="e.g. 2 pills" min="1" required />
+            </div>
+            <div>
+              <label for="frequency" class="block text-gray-600 font-medium">Frequency (Days)</label>
+              <input type="number" id="frequency" name="frequency" min="1" max="365" value="3" required />
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">
+                <input type="checkbox" id="lifetime" class="mr-2"> Lifetime Medication
+              </label>
+            </div>
+            <!-- Image Upload Field -->
+            <div>
+              <label for="medicineImages" class="block text-gray-600 font-medium">Upload Medicine Image(s)</label>
+              <input type="file" id="medicineImages" name="medicineImages" accept="image/*" multiple />
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium mb-2">Set Alarm Time(s)</label>
+              <div id="timeSlots" class="space-y-2">
+                <div class="flex space-x-2 items-center time-slot">
+                  <input type="time" class="startTime rounded-md border-gray-300 shadow-sm" required />
+                  <span class="self-center">to</span>
+                  <input type="time" class="endTime rounded-md border-gray-300 shadow-sm" required />
+                  <button type="button" class="removeTimeSlot bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Remove</button>
+                </div>
+              </div>
+              <button type="button" id="addTimeSlotCG" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Time Slot</button>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Set Reminder</button>
+          </form>
+        </div>
+        <div class="card bg-white p-6 rounded-lg shadow-md mb-8">
+          <h3 class="text-2xl font-semibold text-gray-700 mb-4">Active Medicine Reminders</h3>
+          <div id="caregiverRemindersList">
+            <p class="text-gray-500">No reminders set yet.</p>
+          </div>
+        </div>
+        <div class="card bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-2xl font-semibold text-gray-700 mb-4">Activity Log</h3>
+          <div id="activityLog" class="space-y-2 max-h-96 overflow-y-auto">
+            <p class="text-gray-500 text-sm">No activities yet.</p>
+          </div>
+        </div>
+      </div>
+      <div id="cgSafety" class="cg-page hidden">
+        <h2 class="text-3xl font-bold mb-4">Safety Zone</h2>
+        <p>Access emergency contacts, safety tips, and location-based features here.</p>
+      </div>
+      <div id="cgProfile" class="cg-page hidden">
+        <h2 class="text-3xl font-bold mb-4">Profile</h2>
+        <p>Manage your personal details and settings here.</p>
+      </div>
     </div>
-    <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
-      <button id="cgHomeBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</button>
-      <button id="cgProfileFooter" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</button>
-      <button id="cgSettingsBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</button>
-      <button id="cgLogoutBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125 text-red-500">⎋</button>
-    </footer>
   </div>
 
-  <!-- Elder Home Page -->
-  <div id="elderHome" class="hidden">
-    <!-- Elder Home design as provided -->
-    <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
-      <h1 class="text-2xl font-bold flex items-center">
-        <span class="mr-2">🏠</span> Eldora
-      </h1>
-    </header>
-    <div class="bg-white shadow-md rounded-lg p-4 m-4 w-11/12 text-center">
-      <p class="text-lg font-semibold">
-        Welcome to the app, <span class="text-blue-600">El Hopper!</span>
-      </p>
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-4 w-11/12 text-center">
-      <p class="font-medium mb-2">How are you feeling today?</p>
-      <div class="flex justify-center space-x-3">
-        <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('happy')">😃</a>
-        <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('smile')">😊</a>
-        <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('neutral')">😐</a>
-        <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('sad')">☹️</a>
-        <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('cry')">😢</a>
+  <!-- Elder Profile Section -->
+  <div id="elderProfile" class="hidden">
+    <!-- Elder Navigation (via cards and footer only) -->
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- Elder Home Page with provided design -->
+      <div id="elHome" class="el-page">
+        <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
+          <h1 class="text-2xl font-bold flex items-center">
+            <span class="mr-2">🏠</span> Eldora
+          </h1>
+        </header>
+        <div class="bg-white shadow-md rounded-lg p-4 m-4 w-11/12 text-center">
+          <p class="text-lg font-semibold">
+            Welcome to the app, <span class="text-blue-600">El Hopper!</span>
+          </p>
+        </div>
+        <div class="bg-white shadow-md rounded-lg p-4 w-11/12 text-center">
+          <p class="font-medium mb-2">How are you feeling today?</p>
+          <div class="flex justify-center space-x-3">
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('happy')">😃</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('smile')">😊</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('neutral')">😐</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('sad')">☹️</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('cry')">😢</a>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 p-4 w-11/12">
+          <a href="#" id="elFallBtn" class="block bg-orange-300 hover:bg-orange-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="fall.png" alt="Fall Detection" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Fall Detection</p>
+          </a>
+          <a href="#" id="elSosBtn" class="block bg-red-300 hover:bg-red-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="alarm.png" alt="Emergency SOS" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Emergency SOS</p>
+          </a>
+          <a href="#" id="elSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Safety Zones</p>
+          </a>
+          <a href="#" id="elMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Medication Reminders</p>
+          </a>
+        </div>
+        <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
+          <button id="elHomeBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</button>
+          <button id="elProfileFooter" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</button>
+          <button id="elSettingsBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</button>
+          <button id="elLogoutBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125 text-red-500">⎋</button>
+        </footer>
+        <!-- Pop-up Overlay -->
+        <div id="overlay" class="fixed top-0 left-0 w-full h-full bg-[rgba(30,30,30,0.8)] flex items-center justify-center z-50" style="display: none;">
+          <div class="bg-[rgb(204,128,128)] text-black p-8 rounded-xl w-11/12 max-w-sm text-center shadow-lg relative">
+            <button class="absolute top-2 right-2 bg-transparent border-0 text-2xl cursor-pointer" onclick="hidePopup()">&times;</button>
+            <p id="popup-text" class="text-lg font-semibold"></p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4 p-4 w-11/12">
-      <!-- Fall Detection -->
-      <a href="#" id="elFallBtn" class="block bg-orange-300 hover:bg-orange-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-        <img src="fall.png" alt="Fall Detection" class="mx-auto w-16 h-16">
-        <p class="font-bold mt-2">Fall Detection</p>
-      </a>
-      <!-- Emergency SOS -->
-      <a href="#" id="elSosBtn" class="block bg-red-300 hover:bg-red-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-        <img src="alarm.png" alt="Emergency SOS" class="mx-auto w-16 h-16">
-        <p class="font-bold mt-2">Emergency SOS</p>
-      </a>
-      <!-- Safety Zones -->
-      <a href="#" id="elSafetyBtn" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-        <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
-        <p class="font-bold mt-2">Safety Zones</p>
-      </a>
-      <!-- Medication Reminders -->
-      <a href="#" id="elMedicineBtn" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
-        <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
-        <p class="font-bold mt-2">Medication Reminders</p>
-      </a>
-    </div>
-    <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
-      <button id="elHomeBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</button>
-      <button id="elProfileFooter" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</button>
-      <button id="elSettingsBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</button>
-      <button id="elLogoutBtn" class="text-2xl cursor-pointer transition-transform transform hover:scale-125 text-red-500">⎋</button>
-    </footer>
-    <!-- Pop-up Overlay (for Elder Mood Section) -->
-    <div id="overlay" class="fixed top-0 left-0 w-full h-full bg-[rgba(30,30,30,0.8)] flex items-center justify-center z-50" style="display: none;">
-      <div class="bg-[rgb(204,128,128)] text-black p-8 rounded-xl w-11/12 max-w-sm text-center shadow-lg relative">
-        <button class="absolute top-2 right-2 bg-transparent border-0 text-2xl cursor-pointer" onclick="hidePopup()">&times;</button>
-        <p id="popup-text" class="text-lg font-semibold"></p>
+      <div id="elMedicine" class="el-page hidden">
+        <h2 class="text-3xl font-bold mb-4">Medicine Reminder</h2>
+        <div class="card bg-white p-6 rounded-lg shadow-md">
+          <div id="elderReminders" class="overflow-x-auto">
+            <p class="text-gray-500">No reminders available.</p>
+          </div>
+        </div>
+      </div>
+      <div id="elSafety" class="el-page hidden">
+        <h2 class="text-3xl font-bold mb-4">Safety Zone</h2>
+        <p>Access safety tips, emergency contacts, and location-based safety features here.</p>
+      </div>
+      <div id="elProfile" class="el-page hidden">
+        <h2 class="text-3xl font-bold mb-4">Profile</h2>
+        <p>View and update your personal details here.</p>
       </div>
     </div>
   </div>
@@ -388,13 +483,13 @@
           btn.classList.add('bg-green-700');
         });
       });
-      // Default Elder Navigation: show Medicine Reminder page
-      document.getElementById('elMedicine').classList.remove('hidden');
-      document.getElementById('elHome').classList.add('hidden');
+      // Default Elder Navigation: show Home page
+      document.getElementById('elHome').classList.remove('hidden');
+      document.getElementById('elMedicine').classList.add('hidden');
       document.getElementById('elSafety').classList.add('hidden');
       document.getElementById('elProfile').classList.add('hidden');
       
-      document.getElementById('elLogout').addEventListener('click', () => {
+      document.getElementById('elLogoutBtn').addEventListener('click', () => {
         document.getElementById('elderProfile').classList.add('hidden');
         document.getElementById('landingPage').classList.remove('hidden');
       });
@@ -414,13 +509,13 @@
           btn.classList.add('bg-blue-700');
         });
       });
-      // Default Caregiver Navigation: show Medicine Reminder page
-      document.getElementById('cgMedicine').classList.remove('hidden');
-      document.getElementById('cgHome').classList.add('hidden');
+      // Default Caregiver Navigation: show Home page
+      document.getElementById('cgHome').classList.remove('hidden');
+      document.getElementById('cgMedicine').classList.add('hidden');
       document.getElementById('cgSafety').classList.add('hidden');
       document.getElementById('cgProfile').classList.add('hidden');
       
-      document.getElementById('cgLogout').addEventListener('click', () => {
+      document.getElementById('cgLogoutBtn').addEventListener('click', () => {
         document.getElementById('caregiverProfile').classList.add('hidden');
         document.getElementById('landingPage').classList.remove('hidden');
       });
