@@ -11,7 +11,6 @@
       background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
       font-family: 'Inter', sans-serif;
     }
-    /* Navigation Buttons */
     .nav-btn {
       background-color: transparent;
       color: white;
@@ -24,7 +23,6 @@
     .nav-btn:hover {
       background-color: rgba(255,255,255,0.2);
     }
-    /* Card Style */
     .card {
       background: #f7f7f7;
       border-radius: 0.5rem;
@@ -163,8 +161,107 @@
     <div class="max-w-4xl mx-auto p-6">
       <!-- Elder Pages -->
       <div id="elHome" class="el-page">
-        <h2 class="text-3xl font-bold mb-4">Elder Home</h2>
-        <p>Welcome to your dashboard. Here you can view your medicine reminders and safety information.</p>
+        <!-- Elder Home Page: using the provided design -->
+        <header class="w-full bg-white shadow-lg p-4 flex items-center justify-center">
+          <h1 class="text-2xl font-bold flex items-center">
+            <span class="mr-2">🏠</span> Eldora
+          </h1>
+        </header>
+        <div class="bg-white shadow-md rounded-lg p-4 m-4 w-11/12 text-center">
+          <p class="text-lg font-semibold">
+            Welcome to the app, <span class="text-blue-600">El Hopper!</span>
+          </p>
+        </div>
+        <div class="bg-white shadow-md rounded-lg p-4 w-11/12 text-center">
+          <p class="font-medium mb-2">How are you feeling today?</p>
+          <div class="flex justify-center space-x-3">
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('happy')">😃</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('smile')">😊</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('neutral')">😐</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('sad')">☹️</a>
+            <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125" onclick="showPopup('cry')">😢</a>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 p-4 w-11/12">
+          <a href="#" class="block bg-orange-300 hover:bg-orange-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="fall.png" alt="Fall Detection" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Fall Detection Status</p>
+          </a>
+          <a href="#" class="block bg-red-300 hover:bg-red-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="alarm.png" alt="Emergency SOS" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Emergency SOS</p>
+          </a>
+          <a href="#" class="block bg-green-300 hover:bg-green-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="map.png" alt="Safety Zones" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Safety Zones</p>
+          </a>
+          <a href="#" class="block bg-blue-300 hover:bg-blue-400 transition-all duration-200 rounded-lg p-6 text-center shadow-lg transform hover:scale-105">
+            <img src="medicine.png" alt="Medication Reminders" class="mx-auto w-16 h-16">
+            <p class="font-bold mt-2">Medication Reminders</p>
+          </a>
+        </div>
+        <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
+          <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</a>
+          <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</a>
+          <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</a>
+        </footer>
+        <!-- Pop-up Overlay -->
+        <div id="overlay" class="overlay" onclick="hidePopup()">
+          <div class="popup" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="hidePopup()">&times;</button>
+            <p id="popup-text" class="text-lg font-semibold"></p>
+          </div>
+        </div>
+        <script>
+          const messages = {
+            happy: [
+              "Stay happy and keep smiling!",
+              "Your joy brightens everyone's day!",
+              "Happiness is contagious!",
+              "Keep shining with positivity!",
+              "Enjoy your wonderful mood!"
+            ],
+            smile: [
+              "Your smile is beautiful!",
+              "Keep spreading that amazing smile!",
+              "A smile can change the world!",
+              "Your smile makes everything better!",
+              "Smiles are always in style!"
+            ],
+            neutral: [
+              "It's okay to have a calm day.",
+              "A neutral mood is just a pause before greatness.",
+              "Stay balanced and centered.",
+              "Every mood has its beauty.",
+              "Take a moment to appreciate today."
+            ],
+            sad: [
+              "It's okay to feel sad sometimes.",
+              "Every storm eventually passes.",
+              "You're stronger than you know.",
+              "Take your time to heal.",
+              "Remember, brighter days are ahead."
+            ],
+            cry: [
+              "It's okay to cry; your feelings matter.",
+              "Let your tears flow and heal your heart.",
+              "You're not alone in this.",
+              "Sometimes tears speak what words cannot.",
+              "Better days are coming soon."
+            ]
+          };
+
+          function showPopup(mood) {
+            const messageList = messages[mood];
+            const randomMessage = messageList[Math.floor(Math.random() * messageList.length)];
+            document.getElementById("popup-text").innerText = randomMessage;
+            document.getElementById("overlay").style.display = "flex";
+          }
+
+          function hidePopup() {
+            document.getElementById("overlay").style.display = "none";
+          }
+        </script>
       </div>
       <div id="elMedicine" class="el-page hidden">
         <h2 class="text-3xl font-bold mb-4">Medicine Reminder</h2>
@@ -215,6 +312,7 @@
       return parts.join(' ') + ' late';
     }
     
+    let logEntries = [];
     function addLogEntry(message) {
       const timestamp = new Date().toLocaleString();
       logEntries.unshift({ timestamp, message });
@@ -244,8 +342,7 @@
     // Caregiver Profile Functions
     // -------------------------
     let remindersCG = [];
-    let logEntries = []; // Shared log for caregiver
-    let remindersEL = []; // For demo, share same reminders with elder
+    let remindersEL = [];
     
     document.addEventListener('DOMContentLoaded', function() {
       const caregiverForm = document.getElementById('medicineForm');
@@ -295,7 +392,7 @@
             images
           };
           remindersCG.push(reminder);
-          // For demo, share with elder as well.
+          // Share with Elder profile for demo purposes.
           remindersEL.push(reminder);
           updateCaregiverViews();
           updateElderViews();
@@ -332,7 +429,6 @@
         }
       });
       
-      // Alarm Check for Caregiver Reminders
       setInterval(() => {
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -420,9 +516,7 @@
       window.markTaken = markTaken;
     });
     
-    // -------------------------
-    // Elder Navigation (Internal)
-    // -------------------------
+    // Elder Navigation (Internal Pages)
     document.addEventListener('DOMContentLoaded', function() {
       const elderNavButtons = document.querySelectorAll('.elder-nav-btn');
       elderNavButtons.forEach(btn => {
@@ -446,9 +540,7 @@
       });
     });
     
-    // -------------------------
-    // Caregiver Navigation (Internal)
-    // -------------------------
+    // Caregiver Navigation (Internal Pages)
     document.addEventListener('DOMContentLoaded', function() {
       const caregiverNavButtons = document.querySelectorAll('.caregiver-nav-btn');
       caregiverNavButtons.forEach(btn => {
@@ -472,9 +564,7 @@
       });
     });
     
-    // -------------------------
     // Landing Page Profile Selection
-    // -------------------------
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('selectCaregiver').addEventListener('click', () => {
         document.getElementById('landingPage').classList.add('hidden');
