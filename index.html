@@ -23,6 +23,13 @@
     .nav-btn:hover {
       background-color: rgba(255,255,255,0.2);
     }
+    .btn-primary {
+      background-color: #4a90e2;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #3a78c2;
+    }
     .card {
       background: #f7f7f7;
       border-radius: 0.5rem;
@@ -61,15 +68,15 @@
     </div>
   </div>
 
-  <!-- Caregiver Profile Section -->
+  <!-- Caregiver Profile -->
   <div id="caregiverProfile" class="hidden">
     <!-- Caregiver Navigation -->
     <nav class="p-4 bg-blue-600">
       <div class="max-w-4xl mx-auto flex space-x-4">
-        <button class="caregiver-nav-btn nav-btn text-white px-4 py-2 rounded active" data-page="cgHome">Home</button>
-        <button class="caregiver-nav-btn nav-btn text-white px-4 py-2 rounded" data-page="cgMedicine">Medicine Reminder</button>
-        <button class="caregiver-nav-btn nav-btn text-white px-4 py-2 rounded" data-page="cgSafety">Safety Zone</button>
-        <button class="caregiver-nav-btn nav-btn text-white px-4 py-2 rounded" data-page="cgProfile">Profile</button>
+        <button class="caregiver-nav-btn nav-btn text-white font-semibold px-4 py-2 rounded active" data-page="cgHome">Home</button>
+        <button class="caregiver-nav-btn nav-btn text-white font-semibold px-4 py-2 rounded" data-page="cgMedicine">Medicine Reminder</button>
+        <button class="caregiver-nav-btn nav-btn text-white font-semibold px-4 py-2 rounded" data-page="cgSafety">Safety Zone</button>
+        <button class="caregiver-nav-btn nav-btn text-white font-semibold px-4 py-2 rounded" data-page="cgProfile">Profile</button>
         <button id="cgLogout" class="ml-auto bg-red-500 text-white px-4 py-2 rounded">Logout</button>
       </div>
     </nav>
@@ -81,7 +88,7 @@
       </div>
       <div id="cgMedicine" class="cg-page hidden">
         <h2 class="text-3xl font-bold mb-4">Medicine Reminder</h2>
-        <!-- Medicine Reminder Form and Features (Caregiver) -->
+        <!-- Medicine Reminder Form -->
         <div class="card p-6 rounded-lg shadow-md mb-8">
           <h3 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2">Set Medicine Reminder</h3>
           <form id="medicineFormCG" class="space-y-4">
@@ -102,6 +109,7 @@
                 <input type="checkbox" id="lifetimeCG" class="mr-2"> Lifetime Medication
               </label>
             </div>
+            <!-- Image Upload Field -->
             <div>
               <label for="medicineImagesCG" class="block text-gray-600 font-medium">Upload Medicine Image(s)</label>
               <input type="file" id="medicineImagesCG" name="medicineImagesCG" accept="image/*" multiple />
@@ -136,7 +144,7 @@
       </div>
       <div id="cgSafety" class="cg-page hidden">
         <h2 class="text-3xl font-bold mb-4">Safety Zone</h2>
-        <p>This is the Safety Zone page. Here you can access emergency contacts, safety tips, and location-based safety features.</p>
+        <p>This is the Safety Zone page. Here you can access emergency contacts, safety tips, and location-based features.</p>
       </div>
       <div id="cgProfile" class="cg-page hidden">
         <h2 class="text-3xl font-bold mb-4">Profile</h2>
@@ -145,7 +153,7 @@
     </div>
   </div>
 
-  <!-- Elder Profile Section -->
+  <!-- Elder Profile -->
   <div id="elderProfile" class="hidden">
     <!-- Elder Navigation -->
     <nav class="p-4 bg-green-600">
@@ -183,23 +191,26 @@
   </div>
 
   <script>
-    // Global state for Caregiver and Elder profiles (for demo, sharing same reminders)
+    // Global state (for demo, caregiver and elder share the same reminders)
     let remindersCG = [];
     let logEntriesCG = [];
     let remindersEL = [];
-    
-    // Caregiver Medicine Reminder Functions
+
+    // -----------------------
+    // Caregiver Functionality
+    // -----------------------
     document.addEventListener('DOMContentLoaded', function() {
       const caregiverForm = document.getElementById('medicineForm');
       const frequencyInput = document.getElementById('frequency');
       const lifetimeCheckbox = document.getElementById('lifetime');
       const timeSlotsDiv = document.getElementById('timeSlots');
-      
+
       function timeToMinutes(timeStr) {
         const [h, m] = timeStr.split(':').map(Number);
         return h * 60 + m;
       }
-      
+
+      // Calculate evenly distributed alarm times with remainder distribution.
       function calculateAlarmTimes(start, end) {
         const startM = timeToMinutes(start);
         const endM = timeToMinutes(end);
@@ -211,7 +222,7 @@
         const thirdAlarm = endM;
         return [firstAlarm, secondAlarm, thirdAlarm];
       }
-      
+
       function formatDelay(minutes) {
         const hours = Math.floor(minutes / 60);
         const remaining = minutes % 60;
@@ -220,7 +231,7 @@
         if (remaining > 0) parts.push(`${remaining} minute${remaining === 1 ? '' : 's'}`);
         return parts.join(' ') + ' late';
       }
-      
+
       caregiverForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const medicineName = document.getElementById('medicineName').value;
@@ -253,7 +264,7 @@
           };
         }).filter(x => x !== undefined);
         
-        function processReminder(images) {
+        const processReminder = (images) => {
           const reminder = {
             id: Date.now(),
             medicineName,
@@ -263,7 +274,7 @@
             images
           };
           remindersCG.push(reminder);
-          // For demo, share the same reminders with elder
+          // For demo, share the same reminders with Elder profile
           remindersEL.push(reminder);
           updateCaregiverViews();
           updateElderViews();
@@ -276,8 +287,8 @@
             <input type="time" class="endTime rounded-md border-gray-300 shadow-sm" required />
             <button type="button" class="removeTimeSlot bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Remove</button>
           </div>`;
-        }
-        
+        };
+
         if (files.length > 0) {
           let filePromises = [];
           for (let i = 0; i < files.length; i++) {
@@ -300,10 +311,10 @@
         }
       });
       
+      // Alarm Check for Caregiver Reminders
       setInterval(() => {
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        
         remindersCG.forEach(reminder => {
           reminder.timeSlots.forEach(slot => {
             const slotStart = timeToMinutes(slot.start);
@@ -336,7 +347,6 @@
           </div>
         `).join('') || '<p class="text-gray-500">No reminders set yet.</p>';
         document.getElementById('caregiverReminders').innerHTML = caregiverHTML;
-        
         updateActivityLog();
       }
       
@@ -350,7 +360,7 @@
                 ${ reminder.images.map(img => `<img src="${img}" class="w-48 h-48 object-contain rounded" />`).join('') }
               </div>
             ` : '' }
-            ${reminder.timeSlots.map((slot, idx) => `
+            ${ reminder.timeSlots.map((slot, idx) => `
               <div class="mt-2">
                 <p class="text-gray-600">${slot.start} - ${slot.end}</p>
                 ${ (slot.status === 'pending' || slot.status === 'missed') ? `
@@ -387,20 +397,12 @@
         updateElderViews();
       }
       window.markTaken = markTaken;
-      
-      // Caregiver Navigation
-      const caregiverNavButtons = document.querySelectorAll('.caregiver-nav-btn');
-      caregiverNavButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const page = btn.getAttribute('data-page');
-          document.querySelectorAll('.cg-page').forEach(section => section.classList.add('hidden'));
-          document.getElementById(page).classList.remove('hidden');
-          caregiverNavButtons.forEach(b => b.classList.remove('bg-blue-700'));
-          btn.classList.add('bg-blue-700');
-        });
-      });
-      
-      // Elder Navigation
+    });
+    
+    // -----------------------
+    // Elder Navigation
+    // -----------------------
+    document.addEventListener('DOMContentLoaded', function() {
       const elderNavButtons = document.querySelectorAll('.elder-nav-btn');
       elderNavButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -411,31 +413,48 @@
           btn.classList.add('bg-green-700');
         });
       });
-      
-      // Default Navigation for demonstration:
-      // For Caregiver, default to Medicine Reminder page.
-      document.getElementById('cgMedicine').classList.remove('hidden');
-      document.getElementById('cgHome').classList.add('hidden');
-      document.getElementById('cgSafety').classList.add('hidden');
-      document.getElementById('cgProfile').classList.add('hidden');
-      
-      // For Elder, default to Medicine Reminder page.
+      // Default Elder Navigation: show Medicine Reminder page
       document.getElementById('elMedicine').classList.remove('hidden');
       document.getElementById('elHome').classList.add('hidden');
       document.getElementById('elSafety').classList.add('hidden');
       document.getElementById('elProfile').classList.add('hidden');
       
-      // Logout buttons
-      document.getElementById('cgLogout').addEventListener('click', () => {
-        document.getElementById('caregiverProfile').classList.add('hidden');
-        document.getElementById('landingPage').classList.remove('hidden');
-      });
       document.getElementById('elLogout').addEventListener('click', () => {
         document.getElementById('elderProfile').classList.add('hidden');
         document.getElementById('landingPage').classList.remove('hidden');
       });
+    });
+    
+    // -----------------------
+    // Caregiver Navigation (Internal Pages)
+    // -----------------------
+    document.addEventListener('DOMContentLoaded', function() {
+      const caregiverNavButtons = document.querySelectorAll('.caregiver-nav-btn');
+      caregiverNavButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const page = btn.getAttribute('data-page');
+          document.querySelectorAll('.cg-page').forEach(section => section.classList.add('hidden'));
+          document.getElementById(page).classList.remove('hidden');
+          caregiverNavButtons.forEach(b => b.classList.remove('bg-blue-700'));
+          btn.classList.add('bg-blue-700');
+        });
+      });
+      // Default Caregiver Navigation: show Medicine Reminder page
+      document.getElementById('cgMedicine').classList.remove('hidden');
+      document.getElementById('cgHome').classList.add('hidden');
+      document.getElementById('cgSafety').classList.add('hidden');
+      document.getElementById('cgProfile').classList.add('hidden');
       
-      // Landing Page Profile Selection
+      document.getElementById('cgLogout').addEventListener('click', () => {
+        document.getElementById('caregiverProfile').classList.add('hidden');
+        document.getElementById('landingPage').classList.remove('hidden');
+      });
+    });
+    
+    // -----------------------
+    // Landing Page Profile Selection
+    // -----------------------
+    document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('selectCaregiver').addEventListener('click', () => {
         document.getElementById('landingPage').classList.add('hidden');
         document.getElementById('caregiverProfile').classList.remove('hidden');
