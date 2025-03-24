@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eldora - Medicine Reminder (Caregiver)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-image: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      font-family: 'Inter', sans-serif;
+    }
+    .card {
+      background: #f7f7f7;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="time"],
+    input[type="file"] {
+      background-color: #f7f7f7;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+    .log-entry {
+      padding: 0.75rem;
+      background: white;
+      border-left: 4px solid;
+      margin-bottom: 0.5rem;
+      border-radius: 0.25rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .log-success { border-color: #10b981; }
+    .log-danger { border-color: #ef4444; }
+  </style>
+</head>
+<body class="min-h-screen p-4">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-center">Eldora - Caregiver Dashboard</h1>
+  </header>
+  
+  <!-- Medicine Reminder Form -->
+  <div class="card">
+    <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Set Medicine Reminder</h2>
+    <form id="medicineForm" class="space-y-4">
+      <div>
+        <label for="medicineName" class="block text-gray-600 font-medium">Medicine Name</label>
+        <input type="text" id="medicineName" name="medicineName" placeholder="e.g. Paracetamol" required />
+      </div>
+      <div>
+        <label for="pillCount" class="block text-gray-600 font-medium">Pills per Dose</label>
+        <input type="number" id="pillCount" name="pillCount" placeholder="e.g. 2 pills" min="1" required />
+      </div>
+      <div>
+        <label for="frequency" class="block text-gray-600 font-medium">Frequency (Days)</label>
+        <input type="number" id="frequency" name="frequency" min="1" max="365" value="3" required />
+      </div>
+      <div>
+        <label class="block text-gray-600 font-medium">
+          <input type="checkbox" id="lifetime" class="mr-2"> Lifetime Medication
+        </label>
+      </div>
+      <!-- Image Upload Field -->
+      <div>
+        <label for="medicineImages" class="block text-gray-600 font-medium">Upload Medicine Image(s)</label>
+        <input type="file" id="medicineImages" name="medicineImages" accept="image/*" multiple />
+      </div>
+      <div>
+        <label class="block text-gray-600 font-medium mb-2">Set Alarm Time(s)</label>
+        <div id="timeSlots" class="space-y-2">
+          <div class="flex space-x-2 items-center time-slot">
+            <input type="time" class="startTime rounded-md border-gray-300 shadow-sm" required />
+            <span class="self-center">to</span>
+            <input type="time" class="endTime rounded-md border-gray-300 shadow-sm" required />
+            <button type="button" class="removeTimeSlot bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Remove</button>
+          </div>
+        </div>
+        <button type="button" id="addTimeSlot" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Time Slot</button>
+      </div>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Set Reminder</button>
+    </form>
+  </div>
+  
+  <!-- Active Medicine Reminders List -->
+  <div class="card bg-white">
+    <h2 class="text-2xl font-semibold mb-4">Active Medicine Reminders</h2>
+    <div id="reminderList">
+      <p class="text-gray-500">No reminders set yet.</p>
+    </div>
+  </div>
+  
+  <script>
+    // Helper functions
+    function timeToMinutes(timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
+    
+    // For this demo we use localStorage to share data between pages.
+    function getReminders() {
+      const data = localStorage.getItem('reminders');
+      return data ? JSON.parse(data) : [];
+    }
+    
+    function saveReminders(reminders) {
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+    
+    function renderReminders() {
+      const reminders = getReminders();
+      const container = document.getElementById('reminderList');
+      if (reminders.length === 0) {
+        container.innerHTML = `<p class="text-center text-gray-500">No reminders set yet.</p>`;
+        return;
+      }
+      container.innerHTML = "";
+      reminders.forEach(reminder => {
+        let timeSlotsHtml = reminder.timeSlots.map((slot, idx) => {
+          let buttonHtml = "";
+          if (slot.status === "pending" || slot.status.startsWith("missed")) {
+            buttonHtml = `<button onclick="markTaken(${reminder.id}, ${idx})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                            Mark as Taken
+                          </button>`;
+          }
+          return `<div class="mt-2 border p-2 rounded">
+                    <p>${slot.start} - ${slot.end} (<span class="font-semibold">${slot.status}</span>)</p>
+                    ${buttonHtml}
+                  </div>`;
+        }).join("");
+        
+        container.innerHTML += `
+          <div class="mb-4">
+            <h3 class="text-xl font-bold">${reminder.medicineName}</h3>
+            <p class="text-gray-600">Pills per Dose: ${reminder.pillCount}</p>
+            <p class="text-gray-600">Frequency: ${reminder.frequency === "Life" ? "Lifetime" : reminder.frequency + " day(s)"}</p>
+            <div class="mt-4">
+              ${timeSlotsHtml}
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    // Mark as taken handler (updates localStorage)
+    function markTaken(reminderId, slotIndex) {
+      let reminders = getReminders();
+      reminders = reminders.map(reminder => {
+        if (reminder.id === reminderId) {
+          const slot = reminder.timeSlots[slotIndex];
+          if (slot.status === "pending" || slot.status.startsWith("missed")) {
+            slot.status = "taken";
+          }
+        }
+        return reminder;
+      });
+      saveReminders(reminders);
+      renderReminders();
+    }
+    
+    // Dynamic Time Slot Addition
+    document.getElementById('addTimeSlot').addEventListener('click', () => {
+      const timeSlotsDiv = document.getElementById('timeSlots');
+      const timeSlotDiv = document.createElement('div');
+      timeSlotDiv.classList.add('flex', 'space-x-2', 'items-center', 'time-slot');
+      timeSlotDiv.innerHTML = `
+        <input type="time" class="startTime rounded-md border-gray-300 shadow-sm" required />
+        <span class="self-center">to</span>
+        <input type="time" class="endTime rounded-md border-gray-300 shadow-sm" required />
+        <button type="button" class="removeTimeSlot bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Remove</button>
+      `;
+      timeSlotDiv.querySelector('.removeTimeSlot').addEventListener('click', () => timeSlotDiv.remove());
+      timeSlotsDiv.appendChild(timeSlotDiv);
+    });
+    
+    // Form submission to add a reminder
+    document.getElementById('medicineForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const medicineName = document.getElementById('medicineName').value;
+      const pillCount = document.getElementById('pillCount').value;
+      const frequency = document.getElementById('frequency').value;
+      const lifetime = document.getElementById('lifetime').checked;
+      const medicineImages = document.getElementById('medicineImages').files;
+      
+      // Read time slots
+      const timeSlotsNodes = document.querySelectorAll('.time-slot');
+      const timeSlots = Array.from(timeSlotsNodes).map(slot => {
+        const start = slot.querySelector('.startTime').value;
+        const end = slot.querySelector('.endTime').value;
+        return { start, end, status: "pending" };
+      });
+      
+      // For simplicity, we'll ignore images in this demo.
+      const newReminder = {
+        id: Date.now(),
+        medicineName,
+        pillCount,
+        frequency: lifetime ? "Life" : frequency,
+        timeSlots
+      };
+      
+      const reminders = getReminders();
+      reminders.push(newReminder);
+      saveReminders(reminders);
+      renderReminders();
+      this.reset();
+    });
+    
+    // Initial render on page load.
+    renderReminders();
+    
+    // Optional: update reminders periodically in case changes occur in another tab.
+    setInterval(renderReminders, 5000);
+  </script>
+</body>
+</html>
