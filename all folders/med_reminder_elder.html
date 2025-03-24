@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eldora - Medicine Reminders (Elder)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      font-family: 'Inter', sans-serif;
+    }
+    .card {
+      background: #f7f7f7;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-center">Your Medicine Reminders</h1>
+  </header>
+  
+  <!-- Container for listing the reminders -->
+  <div id="elderReminders" class="space-y-4"></div>
+  
+  <script>
+    // Sample global reminders array.
+    // In your production app, replace this with a fetch call or appropriate data binding.
+    const reminders = [
+      {
+        id: 1,
+        medicineName: "Paracetamol",
+        pillCount: 2,
+        timeSlots: [
+          { start: "08:00", end: "09:00", status: "pending" },
+          { start: "14:00", end: "15:00", status: "taken" },
+          { start: "20:00", end: "21:00", status: "pending" }
+        ]
+      },
+      {
+        id: 2,
+        medicineName: "Ibuprofen",
+        pillCount: 1,
+        timeSlots: [
+          { start: "07:00", end: "07:30", status: "pending" },
+          { start: "19:00", end: "19:30", status: "pending" }
+        ]
+      }
+    ];
+    
+    // Render the list of reminders for the elder.
+    function renderReminders() {
+      const container = document.getElementById("elderReminders");
+      container.innerHTML = "";
+      if (reminders.length === 0) {
+        container.innerHTML = `<p class="text-center text-gray-500">No medicine reminders available.</p>`;
+        return;
+      }
+      
+      reminders.forEach(reminder => {
+        // Build the HTML for time slots.
+        let timeSlotsHtml = reminder.timeSlots.map((slot, idx) => {
+          // Only show the "Mark as Taken" button if the status is pending or indicates a missed dose.
+          let buttonHtml = "";
+          if (slot.status === "pending" || slot.status.startsWith("missed")) {
+            buttonHtml = `<button onclick="markTaken(${reminder.id}, ${idx})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Mark as Taken</button>`;
+          }
+          return `<div class="mt-2 border p-2 rounded">
+                    <p>${slot.start} - ${slot.end} (<span class="font-semibold">${slot.status}</span>)</p>
+                    ${buttonHtml}
+                  </div>`;
+        }).join("");
+        
+        container.innerHTML += `
+          <div class="card">
+            <h2 class="text-2xl font-bold">${reminder.medicineName}</h2>
+            <p class="text-gray-600">Pills per Dose: ${reminder.pillCount}</p>
+            <div class="mt-4">
+              ${timeSlotsHtml}
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    // Handler for marking a reminder's time slot as taken.
+    function markTaken(reminderId, slotIndex) {
+      const reminder = reminders.find(r => r.id === reminderId);
+      if (reminder) {
+        // Update the status to "taken". In a real app, you might update this on the server.
+        reminder.timeSlots[slotIndex].status = "taken";
+        renderReminders();
+      }
+    }
+    
+    // Initial render.
+    renderReminders();
+  </script>
+</body>
+</html>
