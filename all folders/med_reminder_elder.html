@@ -15,6 +15,7 @@
       border-radius: 0.5rem;
       box-shadow: 0 10px 15px rgba(0,0,0,0.1);
       padding: 1.5rem;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -22,58 +23,42 @@
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-center">Your Medicine Reminders</h1>
   </header>
-
-  
-  <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
-    <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</a>
-    <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</a>
-    <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</a>
-  </footer>
   
   <!-- Container for listing the reminders -->
-  <div id="elderReminders" class="space-y-4"></div>
+  <div id="reminderList" class="space-y-4"></div>
   
   <script>
-    // Sample global reminders array.
-    // In your production app, replace this with a fetch call or appropriate data binding.
-    const reminders = [
-      {
-        id: 1,
-        medicineName: "Paracetamol",
-        pillCount: 2,
-        timeSlots: [
-          { start: "08:00", end: "09:00", status: "pending" },
-          { start: "14:00", end: "15:00", status: "taken" },
-          { start: "20:00", end: "21:00", status: "pending" }
-        ]
-      },
-      {
-        id: 2,
-        medicineName: "Ibuprofen",
-        pillCount: 1,
-        timeSlots: [
-          { start: "07:00", end: "07:30", status: "pending" },
-          { start: "19:00", end: "19:30", status: "pending" }
-        ]
-      }
-    ];
+    // Helper function to convert HH:MM to minutes
+    function timeToMinutes(timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
     
-    // Render the list of reminders for the elder.
+    // Get and save reminders using localStorage
+    function getReminders() {
+      const data = localStorage.getItem('reminders');
+      return data ? JSON.parse(data) : [];
+    }
+    
+    function saveReminders(reminders) {
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+    
     function renderReminders() {
-      const container = document.getElementById("elderReminders");
-      container.innerHTML = "";
+      const reminders = getReminders();
+      const container = document.getElementById('reminderList');
       if (reminders.length === 0) {
         container.innerHTML = `<p class="text-center text-gray-500">No medicine reminders available.</p>`;
         return;
       }
-      
+      container.innerHTML = "";
       reminders.forEach(reminder => {
-        // Build the HTML for time slots.
         let timeSlotsHtml = reminder.timeSlots.map((slot, idx) => {
-          // Only show the "Mark as Taken" button if the status is pending or indicates a missed dose.
           let buttonHtml = "";
           if (slot.status === "pending" || slot.status.startsWith("missed")) {
-            buttonHtml = `<button onclick="markTaken(${reminder.id}, ${idx})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Mark as Taken</button>`;
+            buttonHtml = `<button onclick="markTaken(${reminder.id}, ${idx})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                            Mark as Taken
+                          </button>`;
           }
           return `<div class="mt-2 border p-2 rounded">
                     <p>${slot.start} - ${slot.end} (<span class="font-semibold">${slot.status}</span>)</p>
@@ -85,6 +70,7 @@
           <div class="card">
             <h2 class="text-2xl font-bold">${reminder.medicineName}</h2>
             <p class="text-gray-600">Pills per Dose: ${reminder.pillCount}</p>
+            <p class="text-gray-600">Frequency: ${reminder.frequency}</p>
             <div class="mt-4">
               ${timeSlotsHtml}
             </div>
@@ -95,16 +81,25 @@
     
     // Handler for marking a reminder's time slot as taken.
     function markTaken(reminderId, slotIndex) {
-      const reminder = reminders.find(r => r.id === reminderId);
-      if (reminder) {
-        // Update the status to "taken". In a real app, you might update this on the server.
-        reminder.timeSlots[slotIndex].status = "taken";
-        renderReminders();
-      }
+      let reminders = getReminders();
+      reminders = reminders.map(reminder => {
+        if (reminder.id === reminderId) {
+          const slot = reminder.timeSlots[slotIndex];
+          if (slot.status === "pending" || slot.status.startsWith("missed")) {
+            slot.status = "taken";
+          }
+        }
+        return reminder;
+      });
+      saveReminders(reminders);
+      renderReminders();
     }
     
     // Initial render.
     renderReminders();
+    
+    // Optional: update reminders periodically to reflect any changes.
+    setInterval(renderReminders, 5000);
   </script>
 </body>
 </html>
