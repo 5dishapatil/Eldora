@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eldora - Elder Profile</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    #map {
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans bg-gradient-to-br from-white to-purple-400 text-gray-800 pb-20">
+  <!-- (No top appbar) -->
+
+  <!-- Header -->
+  <header class="text-center w-full bg-gradient-to-r from-blue-400 to-purple-500 text-white p-6 shadow-lg">
+    <div class="inline-flex items-center">
+      <img src="https://cdn-icons-png.flaticon.com/512/0/619.png" alt="Location Icon" class="w-8 h-8 mr-2"/>
+      <h1 class="text-3xl">Eldora - Map (Elder Profile)</h1>
+    </div>
+  </header>
+  
+  <!-- Map Section -->
+  <div class="p-4">
+    <h2 class="text-4xl text-center mb-4">Your Map</h2>
+    <div id="map" class="mx-auto border-2 border-gray-300 rounded-md"></div>
+  </div>
+  
+  <!-- Footer Navigation -->
+  <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
+    <a href="home_elder.html" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</a>
+    <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</a>
+    <a href="#" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</a>
+  </footer>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let map, userMarker;
+    
+    function initMap() {
+      const defaultCoords = [37.7749, -122.4194];
+      map = L.map('map').setView(defaultCoords, 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            map.setView([lat, lng], 15);
+            userMarker = L.marker([lat, lng]).addTo(map)
+              .bindPopup("Your Location").openPopup();
+          },
+          () => console.log("Geolocation not allowed or unavailable.")
+        );
+      }
+    }
+    
+    window.addEventListener("DOMContentLoaded", initMap);
+  </script>
+</body>
+</html>
