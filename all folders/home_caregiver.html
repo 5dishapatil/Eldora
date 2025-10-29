@@ -9,11 +9,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* Smooth hover animation for cards */
+    /* Optional: add a subtle smooth hover animation to cards */
     .card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
     .card:hover {
       transform: scale(1.05);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
@@ -37,48 +36,58 @@
     </p>
   </div>
 
-  <!-- Main Content -->
-  <main class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Main Section -->
+  <main class="w-11/12 mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       <!-- Medicine Reminder -->
-      <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-pink-500 to-purple-500">
-        <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
-          <span class="mr-2">💊</span> Medicine Reminder
-        </h2>
-        <p class="text-white">Keep track of medication schedules and never miss a dose.</p>
-      </div>
+      <a href="medicine_reminder.html" class="block">
+        <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-pink-500 to-purple-500 h-full">
+          <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
+            <span class="mr-2">💊</span> Medicine Reminder
+          </h2>
+          <p class="text-white">Keep track of medication schedules and never miss a dose.</p>
+        </div>
+      </a>
 
       <!-- Safety Status -->
-      <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-green-500 to-blue-500">
-        <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
-          <span class="mr-2">🛡️</span> Safety Status
-        </h2>
-        <p class="text-white">Monitor real-time safety alerts to ensure the well-being of your loved ones.</p>
-      </div>
+      <a href="safety_status.html" class="block">
+        <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-green-500 to-blue-500 h-full">
+          <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
+            <span class="mr-2">🛡️</span> Safety Status
+          </h2>
+          <p class="text-white">Monitor real-time safety alerts to ensure the well-being of your loved ones.</p>
+        </div>
+      </a>
 
       <!-- Appointments -->
-      <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-yellow-500 to-orange-500">
-        <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
-          <span class="mr-2">📅</span> Appointments
-        </h2>
-        <p class="text-white">Manage and keep track of all upcoming appointments effortlessly.</p>
-      </div>
+      <a href="appointments.html" class="block">
+        <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-yellow-500 to-orange-500 h-full">
+          <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
+            <span class="mr-2">📅</span> Appointments
+          </h2>
+          <p class="text-white">Manage and keep track of all upcoming appointments effortlessly.</p>
+        </div>
+      </a>
 
       <!-- Fall Status -->
-      <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-red-500 to-pink-500">
-        <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
-          <span class="mr-2">⚠️</span> Fall Status
-        </h2>
-        <p class="text-white">Receive instant notifications and detailed reports in case of a fall.</p>
-      </div>
+      <a href="fall_status.html" class="block">
+        <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-red-500 to-pink-500 h-full">
+          <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
+            <span class="mr-2">⚠️</span> Fall Status
+          </h2>
+          <p class="text-white">Receive instant notifications and detailed reports in case of a fall.</p>
+        </div>
+      </a>
 
       <!-- Active Devices -->
-      <a href="active_devices.html" class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-teal-500 to-cyan-500 block">
-        <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
-          <span class="mr-2">📡</span> Active Devices
-        </h2>
-        <p class="text-white">View the status of all connected monitoring devices.</p>
+      <a href="active_devices.html" class="block">
+        <div class="card rounded-lg shadow-lg p-6 bg-gradient-to-r from-teal-500 to-cyan-500 h-full">
+          <h2 class="text-2xl font-semibold mb-4 text-white flex items-center">
+            <span class="mr-2">📡</span> Active Devices
+          </h2>
+          <p class="text-white">View the status of all connected monitoring devices.</p>
+        </div>
       </a>
 
     </div>
